@@ -410,7 +410,8 @@ GROUP BY
 ORDER BY 
     T.TEam_id
 ;       
- 
+
+
 --024
 --팀별 골키퍼의 평균키
 --아이파크 180cm
@@ -430,81 +431,247 @@ ORDER BY
     t.team_name
 ;    
 
-CREATE TABLE teamz(
-    TEAM_ID VARCHAR2(20) PRIMARY KEY,
-    TEAM_NAME VARCHAR2(20)
-);
-
-CREATE TABLE teamw(
-    MEM_ID VARCHAR2(20) PRIMARY KEY,
-    TEAM_ID VARCHAR2(20),
-    MEM_NAME VARCHAR2(20),
-    MEM_AGE DECIMAL
-);
-
-update teamw set mem_name = '태형'
-where mem_id like (select mem_id from teamw where mem_name like '태영');
-
-update teamw set mem_age = '27'
-where mem_id like (select mem_id from teamw where mem_name like'진태' AND mem_AGE like '26');
-
-alter table teamw add constraint teamz_fk_team_id foreign key (team_id) references teamz(team_id);
-
-ALTER TABLE teamw
-add roll VARCHAR2(20);
 
 select * from teamw;
 
 
-
-select (select team_name from teamz where team_id = w.team_id) 팀명,
-    count(*) 팀원수,
-    SUM(w.mem_age) 나이합,
-    MAX(w.mem_age) 최대나이,
-    MIN(w.mem_age) 최소나이,
-    AVG(w.mem_age) 평균연령
-FROM teamw w
-GROUP BY w.team_id
-ORDER BY MAX(w.mem_age)
+select    ROWNUM "NO." ,a.*
+FROM (SELECT 
+    t.team_name 팀명,
+    p.position 포지션,
+    p.back_no 백넘버,
+    p.height "키(cm)"
+    FROM player p
+    JOIN team t
+        ON t.TEAM_ID like p.Team_id
+    WHERE
+    t.team_ID LIKE(
+    select team_id 
+    from team 
+    where team_name like '삼성블루윙즈')
+    ORDER BY p.height desc) a
 ;
 
+
+
+--가상테이블 기존에 있던 테이블을 가져다가 가상으로 조합. 그러나 공간 점유는 함. 연산이 끝나면 제거됨.
+(SELECT 
+    t.team_name 팀명,
+    p.position 포지션,
+    p.back_no 백넘버,
+    p.height "키(cm)"
+FROM player p
+    JOIN team t
+    ON t.TEAM_ID like p.Team_id
+WHERE
+    t.team_ID LIKE(
+    select team_id 
+    from team 
+    where team_name like '삼성블루윙즈')
+ORDER BY p.height desc) 
+;
+
+
+--키가 널 값인 사람은 제외
+
+select    ROWNUM "NO." ,a.*
+FROM (SELECT 
+    t.team_name 팀명,
+    p.position 포지션,
+    p.back_no 백넘버,
+    p.height "키(cm)"
+    FROM player p
+    JOIN team t
+        ON t.TEAM_ID like p.Team_id
+    WHERE
+    t.team_ID LIKE(
+    select team_id 
+    from team 
+    where team_name like '삼성블루윙즈')
+        AND NOT p.height is null
+    ORDER BY p.height desc) a
+;
+
+
+select    
+    ROWNUM "NO." ,
+    a.*
+FROM (SELECT 
+    t.team_name 팀명,
+    p.position 포지션,
+    p.back_no 백넘버,
+    p.height "키(cm)"
+    FROM player p
+    JOIN team t
+        ON t.TEAM_ID like p.Team_id
+    WHERE
+    t.team_ID LIKE(
+    select team_id 
+    from team 
+    where team_name like '삼성블루윙즈')
+        AND NOT p.height is null        
+    ORDER BY p.height desc) a
+WHERE ROWNUM <= 10
+;
+
+--026
+--삼성블루윙즈에서 키 10위부터 20위까지 찾기.
 
 SELECT
-    PLAYER_NAME,
-    CASE
-        WHEN POSITION IS NULL THEN '없음'
-        WHEN POSITION LIKE 'GK' THEN '골키퍼'
-        WHEN POSITION LIKE 'MF' THEN '미드필더'
-        WHEN POSITION LIKE 'DF' THEN '수비수'
-        WHEN POSITION LIKE 'FW' THEN '공격수'
-        ELSE POSITION
-    END 포지션
-FROM PLAYER
-WHERE
-    TEAM_ID='K08'
+     b.*
+FROM (
+    SELECT    
+        ROWNUM NO ,
+        a.*
+    FROM (
+        SELECT 
+            t.team_name 팀명,
+            p.position 포지션,
+            p.back_no 백넘버,
+            p.height "키(cm)"
+        FROM player p
+        JOIN team t
+            ON t.TEAM_ID like p.Team_id
+        WHERE
+            t.team_ID LIKE(
+                            SELECT team_id 
+                            FROM team 
+                            WHERE team_name like '삼성블루윙즈')
+                                AND NOT p.height IS NULL        
+    ORDER BY p.height DESC) a) b
+WHERE 
+    b.NO BETWEEN 10 AND 20
 ;
 
-select (select team_name from teamz where team_id = w.team_id) 팀명,
-    count(*) 팀원수,
-    SUM(w.mem_age) 나이합,
-    MAX(w.mem_age) 최대나이,
-    MIN(w.mem_age) 최소나이,
-    AVG(w.mem_age) 평균연령
-FROM teamw w
-GROUP BY w.team_id
-HAVING AVG(w.mem_age) >=28
-ORDER BY w.team_id
+
+
+
+SELECT (select team_name from team where team_id = T.team_id) 팀이름, round(avg(p.weight),1) "몸무게" 
+FROM team t
+  JOIN player p
+    ON p.team_id like t.team_id
+WHERE p.position like 'GK'
+GROUP BY t.team_id
+ORDER BY avg(p.weight) DESC
+;
+
+-- 026
+-- 팀별 골키퍼의 평균 키에서
+-- 가장 평균키가 큰 팀명은
+
+SELECT ROWNUM NO,a.*
+FROM (SELECT (select team_name from team where team_id = T.team_id) 팀이름, round(avg(p.height),1) 키
+        FROM team t
+            JOIN player p
+                ON p.team_id like t.team_id
+        WHERE p.position like 'GK'
+        GROUP BY t.team_id
+        ORDER BY avg(p.height) DESC) a
+WHERE ROWNUM <=1
 ;
 
 
-UPDATE teamw 
-    SET roll = 
-        case 
-            WHEN mem_id in('1','6','11','16') THEN '팀장'
-            ELSE '팀원'
-        END;
-    
 
 
-select * from teamw;
+
+-- 027
+-- 각 구단별 선수들 평균키가 삼성 블루윙즈팀의
+-- 평균키보다 작은 팀의 이름과 해당 팀의 평균키를 
+-- 구하시오
+
+SELECT 
+    (select team_name from team where team_id = T.team_id) 팀이름,
+    round(avg(p.height),1) 키
+FROM team t
+    JOIN player p
+        ON p.team_id like t.team_id
+GROUP BY t.team_id
+    Having avg(p.height)<((select avg(p.height) 삼성키
+        FROM team t
+            JOIN player p
+                ON p.team_id like t.team_id
+        WHERE p.team_id like (select team_id from team where team_name ='삼성블루윙즈')
+        GROUP BY t.team_id))
+ORDER BY avg(p.height) DESC;
+
+--
+--
+--(select round(avg(p.height),1) 삼성키
+--        FROM team t
+--        JOIN player p
+--        ON p.team_id like t.team_id
+--WHERE p.team_id like (select team_id from team where team_name ='삼성블루윙즈')
+--GROUP BY t.team_id
+--ORDER BY avg(p.height) DESC)
+
+
+
+
+-- 028
+-- 2012년 경기 중에서 점수차가 가장 큰 경기 전부
+
+
+SELECT ROWNUM NO,a.*
+FROM (
+        SELECT sc.sche_date 날짜 , ABS(sc.HOME_SCORE-sc.AWAY_SCORe) "점수차", (select team_name from team a where a.team_id like sc.hometeam_id) "홈팀", (select team_name from team a where a.team_id like sc.awayteam_id) "어웨이팀"
+        FROM schedule sc
+            JOIN team ht
+                ON ht.team_id = sc.hometeam_id
+            JOIN team at
+                ON at.team_id = sc.awayteam_id
+        WHERE sc.HOME_SCORE IS NOT NULL
+        ORDER BY ABS(sc.HOME_SCORE-sc.AWAY_SCOre) desc) a
+where ROWNUM<=1;
+
+
+--SELECT sc.sche_date 날짜 , ABS(sc.HOME_SCORE-sc.AWAY_SCORe) "점수차", (select team_name from team a where a.team_id like sc.hometeam_id) "홈팀", (select team_name from team a where a.team_id like sc.awayteam_id) "어웨이팀"
+--FROM schedule sc
+--    JOIN team ht
+--        ON ht.team_id = sc.hometeam_id
+--    JOIN team at
+--        ON at.team_id = sc.awayteam_id
+--WHERE sc.HOME_SCORE IS NOT NULL
+--ORDER BY ABS(sc.HOME_SCORE-sc.AWAY_SCOre) desc
+;
+
+
+-- 029
+-- 좌석수대로 스타디움 순서 매기기
+
+SELECT ROWNUM NO,a.*
+from  (select team_name AS"팀명", seat_count "좌석수"
+        from stadium st
+        join team t
+            on t.stadium_id = st.stadium_id
+        order by seat_count desc) a
+;
+
+
+
+--
+--
+--(select team_name AS"팀명", seat_count "좌석수"
+--from stadium st
+--    join team t
+--        on t.stadium_id = st.stadium_id
+--order by seat_count desc)
+
+
+
+-- 030
+-- 2012년 구단 승리 순으로 순위매기기
+--
+
+SeLeCt rOwNum no, (select team_name from team where t.team_id like team_id),count(승리) 승리횟수
+fRom(
+    SELECT sc.sche_date 날짜, case when sc.HOME_SCORE-sc.AWAY_SCORE>0 then ht.team_id when sc.Away_score-sc.Home_Score >0 then at.team_id end 승리
+    fRoM sCHEDULE sc
+        jOiN teAm ht
+            ON ht.TEAM_ID like sc.homeTEAM_id
+        jOiN teAm at
+            ON at.TEAM_ID like sc.awayTEAM_id
+     WHERE sc.sche_date like '2012%') a
+GROUP BY a.승리
+ORDER BY count(승리) DESC
+;
 
