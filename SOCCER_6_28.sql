@@ -675,3 +675,351 @@ GROUP BY a.승리
 ORDER BY count(승리) DESC
 ;
 
+
+
+CREATE TABLE TEAMZ
+(
+    TEAM_ID      VARCHAR2 (20) PRIMARY KEY,
+    TEAM_NAME    VARCHAR2 (20)
+);
+
+CREATE TABLE TEAMW
+(
+    MEM_ID      VARCHAR2 (20) PRIMARY KEY,
+    TEAM_ID     VARCHAR2 (20),
+    MEM_NAME    VARCHAR2 (20),
+    MEM_AGE     DECIMAL,
+    ROLL        VARCHAR2 (20)
+);               
+
+---------------
+ALTER TABLE MEMBER
+    ADD CONSTRAINT TEAM_fk_TEAM_ID FOREIGN KEY (TEAM_ID)
+            REFERENCES PROJECT_TEAM (TEAM_ID);
+
+INSERT INTO PROJECT_TEAM (TEAM_ID, TEAM_NAME)
+     VALUES ('A', '저스티스');
+
+INSERT INTO PROJECT_TEAM (TEAM_ID, TEAM_NAME)
+     VALUES ('B', '엘카로');
+
+INSERT INTO PROJECT_TEAM (TEAM_ID, TEAM_NAME)
+     VALUES ('C', '가오갤');
+
+INSERT INTO PROJECT_TEAM (TEAM_ID, TEAM_NAME)
+     VALUES ('D', '어벤저스');
+
+
+SELECT * FROM MEMBER;
+-------------------
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('저스티스1',
+             'ATEAM',
+             '형준',
+             '34');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('저스티스2',
+             'ATEAM',
+             '세인',
+             '35');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('저스티스3',
+             'ATEAM',
+             '희태',
+             '21');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('저스티스4',
+             'ATEAM',
+             '상훈',
+             '29');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('저스티스5',
+             'ATEAM',
+             '태형',
+             '25');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('엘카로1',
+             'HTEAM',
+             '혜리',
+             '26');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('엘카로2',
+             'HTEAM',
+             '지은',
+             '26');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('엘카로3',
+             'HTEAM',
+             '준',
+             '27');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('엘카로4',
+             'HTEAM',
+             '재경',
+             '30');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('엘카로5',
+             'HTEAM',
+             '단아',
+             '26');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('가오갤1',
+             'CTEAM',
+             '최정훈',
+             '32');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('가오갤2',
+             'CTEAM',
+             '윤호',
+             '31');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('가오갤3',
+             'CTEAM',
+             '가은',
+             '29');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('가오갤4',
+             'CTEAM',
+             '정훈',
+             '23');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('가오갤5',
+             'CTEAM',
+             '승태',
+             '30');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('어벤져스1',
+             'STEAM',
+             '승호',
+             '27');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('어벤져스2',
+             'STEAM',
+             '소진',
+             '26');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('어벤져스3',
+             'STEAM',
+             '이슬',
+             '29');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('어벤져스4',
+             'STEAM',
+             '진태',
+             '26');
+
+INSERT INTO TEAMW (MEM_ID,
+                   TEAM_ID,
+                   MEM_NAME,
+                   MEM_AGE)
+     VALUES ('어벤져스5',
+             'STEAM',
+             '누리',
+             '30');
+             
+UPDATE TEAMW
+   SET ROLL =
+           CASE
+               WHEN mem_name IN ('형준',
+                                 '혜리',
+                                 '최정훈',
+                                 '승호')
+               THEN
+                   '팀장'
+               ELSE
+                   '팀원'
+           END;
+
+
+desc teamw
+
+
+          
+ 
+select * from tab;
+
+ALTER TABLE TEAMZ
+RENAME TO PROJECT_TEAM;
+ALTER TABLE TEAMW
+RENAME TO MEMBER;
+
+SELECT * FROM MEMBER;
+
+ALTER TABLE MEMBER
+RENAME COLUMN MEM_NAME TO NAME;
+
+ALTER TABLE MEMBER
+RENAME COLUMN MEM_AGE TO AGE;
+
+
+CREATE TABLE TEAMW
+(
+    MEM_ID      VARCHAR2 (20) PRIMARY KEY,
+    TEAM_ID     VARCHAR2 (20),
+    MEM_NAME    VARCHAR2 (20),
+    MEM_AGE     DECIMAL,
+    ROLL        VARCHAR2 (20)
+);
+--squence 생성           
+    CREATE SEQUENCE  SUB_SEQ START WITH  1001;
+--subject 테이블 생성
+CREATE TABLE SUBJECT
+(
+    SUB_SEQ DECIMAL PRIMARY KEY,
+    SUB_NAME VARCHAR2(20)
+);
+-- 값 넣기
+INSERT INTO SUBJECT VALUES(
+SUB_SEQ.nextval, 'JAVA'
+);
+INSERT INTO SUBJECT VALUES(
+SUB_SEQ.nextval, 'R'
+);
+INSERT INTO SUBJECT VALUES(
+SUB_SEQ.nextval, 'PYTHON'
+);
+INSERT INTO SUBJECT VALUES(
+SUB_SEQ.nextval, 'HTML');
+INSERT INTO SUBJECT VALUES(
+SUB_SEQ.nextval, 'SQL');
+
+select * from subject;
+
+-- RECORD TABLE 만들기
+
+CREATE SEQUENCE RECORD_SEQ START WITH 2000;
+
+CREATE TABLE RECORD 
+(
+    RECORD_SEQ DECIMAL PRIMARY KEY,
+    GRADE VARCHAR2(20),
+    AVG VARCHAR2(20)
+);
+
+--EXAM TABLE 만들기
+CREATE SEQUENCE EXAM_SEQ START WITH 3000;
+CREATE TABLE EXAM 
+(
+    EXAM_SEQ DECIMAL PRIMARY KEY,
+    SCORE VARCHAR2(20),
+    MONTH VARCHAR2(20),
+    MEM_ID VARCHAR2(20),
+    SUB_SEQ VARCHAR2(20),
+    RECORD_SEQ VARCHAR2(20)
+);
+--FK설정
+ALTER TABLE EXAM ADD CONSTRAINT MEMBER_fk_MEM_ID
+    FOREIGN KEY (MEM_ID) REFERENCES MEMBER(MEM_ID);
+    
+ALTER TABLE EXAM ADD CONSTRAINT RECORD_fk_RECORD_SEQ
+    FOREIGN KEY (RECORD_SEQ) REFERENCES RECORD(RECORD_SEQ);
+    
+ALTER TABLE EXAM ADD CONSTRAINT SUBJECT_fk_SUB_SEQ
+    FOREIGN KEY (SUB_SEQ) REFERENCES SUBJECT(SUB_SEQ);
+desc RECORD;
+ --컬럼 데이터 타입 바꾸기
+ ALTER TABLE EXAM MODIFY SUB_SEQ DECIMAL;
+ ALTER TABLE EXAM MODIFY RECORD_SEQ DECIMAL;
+;
+7/11
+select * from MEMBER;
+update member set mem_id = "hung";
+desc member;
+--행추가
+alter table member add(password varchar2(20));
+--패스워드에만 넣기
+
+--쭌
+update member set mem_id = 'joon'
+where name like '준'
+;
+--오토 커밋이겠지만 이거 때려주면 확실해짐
+commit; 
+
+SELECT MEM_ID ADMINID ,
+        TEAM_ID TEAMID,
+        NAME,
+        AGE,
+        ROLL,
+        PASSWORD
+FROM MEMBER
+WHERE MEM_ID LIKE 'joon'
+    AND PASSWORD LIKE '1'
+;
+
+SELECT * FROM TAB;
